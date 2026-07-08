@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devboard-frontend-service
+  namespace: sid-devboard
+spec:
+  selector:
+    app: devboard-frontend
+  ports:
+    - protocol: TCP
+      port: 8080 #port to exposed
+      targetPort: 4173 #pod port
+      nodePort: 30080 #node type port or cluster port
+
+  type: NodePort
