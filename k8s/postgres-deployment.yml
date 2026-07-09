@@ -5,43 +5,50 @@ metadata:
   namespace: sid-devboard
   labels:
     app: devboard-postgres
+
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: devboard-postgres
+
   template:
     metadata:
       labels:
         app: devboard-postgres
+
     spec:
       containers:
-      - name: postgres
-        image: postgres:16-alpine
-        ports:
-        - containerPort: 5432
-        env:
-        - name: POSTGRES_USER                               
-          valueFrom:
-            secretKeyRef:
-              name: devboard-secrets        # The ConfigMap this value comes from.
-              key: POSTGRES_USER
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
 
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: devboard-secrets
-              key: POSTGRES_PASSWORD
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: devboard-secrets
+                  key: POSTGRES_USER
 
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: devboard-secrets
+                  key: POSTGRES_PASSWORD
 
-        - name: POSTGRES_DB
-          valueFrom:
-            secretKeyRef:
-              name: devboard-secrets
-              key: POSTGRES_DB
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: devboard-secrets
+                  key: POSTGRES_DB
+
+          volumeMounts:
+            - name: init
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
 
       volumes:
         - name: init
           configMap:
-            name: postgres-init
-
+            name: devboard-configmap
