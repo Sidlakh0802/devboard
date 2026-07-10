@@ -16,15 +16,15 @@ spec:
         app: devboard-backend
     spec:
       containers:
-      - name: devboard-backend 
-        image: sid0802/devboard-backend:latest
+      - name: devboard-backend
+        image: sid0802/backend:latest
         ports:
         - containerPort: 8080
         env:
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: devboard-secrets        
+              name: devboard-secrets
               key: POSTGRES_USER
 
         - name: POSTGRES_PASSWORD
@@ -33,15 +33,13 @@ spec:
               name: devboard-secrets
               key: POSTGRES_PASSWORD
 
-
         - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
               name: devboard-secrets
               key: POSTGRES_DB
 
-    
-        - name:  POSTGRES_URL
+        - name: POSTGRES_URL
           value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)?sslmode=disable"
 
         - name: PORT
@@ -49,5 +47,10 @@ spec:
             secretKeyRef:
               name: devboard-secrets
               key: BACKEND_PORT
-    
 
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
