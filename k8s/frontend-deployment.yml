@@ -6,7 +6,7 @@ metadata:
   labels:
     app: devboard-frontend
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels:
       app: devboard-frontend
@@ -21,4 +21,11 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 4173
+      resources:
+        requests: #minimum resources required for the container to run
+          memory: 64Mi
+          cpu: 10m
+        limits: #maximum resources the container can use
+          memory: 128Mi
+          cpu: 250m
 
