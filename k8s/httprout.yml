@@ -2,7 +2,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: devboard-route
-  namespace: devboard
+  namespace: sid-devboard
 spec:
   parentRefs:
     - name: devboard-gateway
