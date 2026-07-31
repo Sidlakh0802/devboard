@@ -1,67 +1,67 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: devboard-postgres-deployment
-  namespace: sid-devboard
-  labels:
-    app: devboard-postgres
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: devboard-postgres-deployment
+#   namespace: sid-devboard
+#   labels:
+#     app: devboard-postgres
 
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: devboard-postgres
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: devboard-postgres
 
-  template:
-    metadata:
-      labels:
-        app: devboard-postgres
+#   template:
+#     metadata:
+#       labels:
+#         app: devboard-postgres
 
-    spec:
-      containers:
-        - name: postgres
-          image: postgres:16-alpine
-          ports:
-            - containerPort: 5432
+#     spec:
+#       containers:
+#         - name: postgres
+#           image: postgres:16-alpine
+#           ports:
+#             - containerPort: 5432
 
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: devboard-secrets
-                  key: POSTGRES_USER
+#           env:
+#             - name: POSTGRES_USER
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: devboard-secrets
+#                   key: POSTGRES_USER
 
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: devboard-secrets
-                  key: POSTGRES_PASSWORD
+#             - name: POSTGRES_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: devboard-secrets
+#                   key: POSTGRES_PASSWORD
 
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: devboard-secrets
-                  key: POSTGRES_DB
-          readinessProbe:
-            exec:
-              command: ["sh", "-c", "pg_isready -U $(POSTGRES_USER) -d $(POSTGRES_DB)"]
-            initialDelaySeconds: 5
-            periodSeconds: 10
+#             - name: POSTGRES_DB
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: devboard-secrets
+#                   key: POSTGRES_DB
+#           readinessProbe:
+#             exec:
+#               command: ["sh", "-c", "pg_isready -U $(POSTGRES_USER) -d $(POSTGRES_DB)"]
+#             initialDelaySeconds: 5
+#             periodSeconds: 10
 
-          volumeMounts:
-            - name: init
-              mountPath: /docker-entrypoint-initdb.d
-              readOnly: true
+#           volumeMounts:
+#             - name: init
+#               mountPath: /docker-entrypoint-initdb.d
+#               readOnly: true
 
-            - name: data
-              mountPath: /var/lib/postgresql/data
+#             - name: data
+#               mountPath: /var/lib/postgresql/data
 
 
 
-      volumes:
-        - name: init
-          configMap:
-            name: devboard-configmap
+#       volumes:
+#         - name: init
+#           configMap:
+#             name: devboard-configmap
 
         - name: data
           persistentVolumeClaim:
