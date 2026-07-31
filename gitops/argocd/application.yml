@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devboard-sid
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Sidlakh0802/devboard.git
+    targetRevision: feature/k8s
+    path: k8s
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devboard-helm
+
+  # The frontend Deployment's replica count is owned by the HPA, not Git.
+ # ignoreDifferences:
+   # - group: apps
+     # kind: Deployment
+      #jsonPointers:
+       # - /spec/replicas
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
